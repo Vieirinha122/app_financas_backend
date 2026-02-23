@@ -1,0 +1,40 @@
+{
+  "name": "app_financas_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vieirinha122/app_financas_backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Vieirinha122/app_financas_backend/issues"
+  },
+  "homepage": "https://github.com/Vieirinha122/app_financas_backend#readme",
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "dotenv": "^17.3.1",
+    "prisma": "^7.4.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@fastify/jwt": "^10.0.0",
+    "@prisma/client": "^7.4.1",
+    "bcryptjs": "^3.0.3",
+    "pg": "^8.18.0",
+    "zod": "^4.3.6"
+  }
+}
