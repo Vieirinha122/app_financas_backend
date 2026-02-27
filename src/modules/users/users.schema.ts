@@ -3,9 +3,9 @@
 import zod from "zod"
 
 export const createUserSchema = zod.object({
-  name: zod.string().min(3),
+  nome: zod.string().min(3),
   email: zod.email(),
-  password: zod.string().min(6),
+  senha: zod.string().min(6),
 });
 
 export type CreateUserDTO = zod.infer<typeof createUserSchema>;
@@ -15,20 +15,15 @@ export const idParamsSchema = zod.object({
 });
 
 export const updateUserSchema = zod.object({
-  name: zod.string().min(3).optional(), // melhor deixar opcional pq geralmente num update nao faz tudo de uma vez
+  nome: zod.string().min(3).optional(), // melhor deixar opcional pq geralmente num update nao faz tudo de uma vez
   email: zod.email().optional(),
-  password: zod.string().min(6).optional(),
+  senha: zod.string().min(6).optional(),
 });
 
 export type UpdateUserDTO = zod.infer<typeof updateUserSchema>;
 
 export const deleteUserSchema = zod.object({
   id: zod.uuid(),
-});
-
-export const loginUserSchema = zod.object({
-  email: zod.email(),
-  password: zod.string().min(6),
 });
 
 export const getUserSchema = zod.object({

@@ -9,13 +9,7 @@ const userExists = await prisma.user.findUnique({
   if (userExists) {
     throw new AppError("Usuário já existe", 409);
   }
-  return prisma.user.create({
-    data: {
-      nome: data.name,
-      email: data.email,
-      senha: data.password,
-    },
-  });
+  return prisma.user.create({data})
 };
 
 export const getAllUsers = () => { return prisma.user.findMany(); };    
@@ -32,14 +26,7 @@ export const getUser = async (id: string) => {
 
 export const updateUser = async (id: string, data: UpdateUserDTO) => {
   await getUser(id);
-  return prisma.user.update({
-    where: { id },
-    data: {
-      nome: data.name,
-      email: data.email,
-      senha: data.password,
-    },
-  });
+  return prisma.user.update({where: { id }, data})
 };
 
 export const deleteUser = async (id: string) => {
