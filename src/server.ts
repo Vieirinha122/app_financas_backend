@@ -47,6 +47,6 @@ app.get("/", async (request, reply) => {
 app.register(usersRoutes, { prefix: "/usuarios" });
 app.register(authRoutes, { prefix: "/auth" });
 
-app.listen({ port: 3333 }, () => {
+app.listen({ port: 3333, host: "0.0.0.0" }, () => {
   console.log("Rodando");
 });
