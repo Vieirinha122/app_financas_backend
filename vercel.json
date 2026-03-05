@@ -1,7 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "npx tsc",
-  "outputDirectory": "dist",
   "builds": [
     {
       "src": "dist/server.js",
