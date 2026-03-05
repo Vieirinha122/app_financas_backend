@@ -1,7 +1,7 @@
-import fastify from "fastify";
+import fastify, { FastifyInstance } from "fastify";
 import { errorHandler } from "./plugins/error.handler";
 import sensible from "@fastify/sensible";
-import {serializerCompiler, validatorCompiler} from "fastify-type-provider-zod";
+import { serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
 import cors from "@fastify/cors";
 import { fastifyJwt } from "@fastify/jwt";
 import prismaPlugin from "./plugins/prisma";
@@ -12,41 +12,50 @@ import { FastifyRequest, FastifyReply } from "fastify";
 
 dotenv.config();
 
-const app = fastify();
+let app: FastifyInstance;
 
-// Validação com zod com nova lib
-app.setValidatorCompiler(validatorCompiler);
-app.setSerializerCompiler(serializerCompiler);
+function buildApp(): FastifyInstance {
+  if (app) return app; // reutiliza instância entre requests (warm start)
 
-app.register(sensible);
+  app = fastify();
 
-app.register(cors, {
-  origin: "*",
-});
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
 
-app.register(fastifyJwt, {
-  secret: process.env.JWT_SECRET!,
-});
+  app.register(sensible);
+  app.register(cors, { origin: "*" });
 
-app.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
-  try {
-    await request.jwtVerify();
-  } catch (error) {
-    reply.send(error);
-  }
-});
+  app.register(fastifyJwt, {
+    secret: process.env.JWT_SECRET!,
+  });
 
-app.register(prismaPlugin);
+  app.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      await request.jwtVerify();
+    } catch (error) {
+      reply.send(error);
+    }
+  });
 
-app.register(errorHandler);
+  app.register(prismaPlugin);
+  app.register(errorHandler);
 
-app.get("/", async (request, reply) => {
-  return "Rodando";
-});
+  app.get("/", async () => "Rodando");
 
-app.register(usersRoutes, { prefix: "/usuarios" });
-app.register(authRoutes, { prefix: "/auth" });
+  app.register(usersRoutes, { prefix: "/usuarios" });
+  app.register(authRoutes, { prefix: "/auth" });
 
-app.listen({ port: 3333, host: "0.0.0.0" }, () => {
-  console.log("Rodando");
-});
+  return app;
+}
+
+export default async function handler(req: any, res: any) {
+  const server = buildApp();
+  await server.ready();
+  server.server.emit("request", req, res);
+}
+
+if (process.env.VERCEL !== "1") {
+  buildApp().listen({ port: 3333, host: "0.0.0.0" }, () => {
+    console.log("Rodando na porta 3333");
+  });
+}
