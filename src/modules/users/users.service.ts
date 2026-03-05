@@ -1,15 +1,25 @@
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../errors/AppError";
 import { CreateUserDTO, UpdateUserDTO } from "./users.schema";
+import bcrypt from "bcryptjs";
 
 export const createUser = async (data: CreateUserDTO) => {
-const userExists = await prisma.user.findUnique({
+  const userExists = await prisma.user.findUnique({
     where: { email: data.email },
   });
   if (userExists) {
     throw new AppError("Usuário já existe", 409);
   }
-  return prisma.user.create({data})
+
+  const hashedPassword = await bcrypt.hash(data.senha, 10);
+
+  return prisma.user.create({
+    data: {
+      ...data,
+      email: data.email.toLowerCase(),
+      senha: hashedPassword,
+    },
+  });
 };
 
 export const getAllUsers = () => { return prisma.user.findMany(); };    

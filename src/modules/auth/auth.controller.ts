@@ -8,7 +8,7 @@ export const registerController = async (
 ) => {
   const user = await AuthService.registerUser(request.body);
   
-  const token = request.server.jwt.sign({ sub: user.id });
+  const token = request.server.jwt.sign({ id: user.id });
 
   return reply.status(201).send({ user, token });
 };
@@ -19,7 +19,7 @@ export const loginController = async (
 ) => {
   const user = await AuthService.validateLogin(request.body);
 
-  const token = request.server.jwt.sign({ sub: user.id });
+  const token = request.server.jwt.sign({ id: user.id });
 
   return reply.send({ 
     token, 

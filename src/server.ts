@@ -9,6 +9,7 @@ import dotenv from "dotenv";
 import usersRoutes from "./modules/users/users.routes";
 import authRoutes from "./modules/auth/auth.routes";
 import { FastifyRequest, FastifyReply } from "fastify";
+import transacaoRoutes from "./modules/transacao/transacao.routes";
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ function buildApp(): FastifyInstance {
 
   app.register(usersRoutes, { prefix: "/usuarios" });
   app.register(authRoutes, { prefix: "/auth" });
+  app.register(transacaoRoutes, { prefix: "/transacoes" });
 
   return app;
 }
