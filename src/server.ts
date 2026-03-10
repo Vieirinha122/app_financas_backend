@@ -11,6 +11,7 @@ import authRoutes from "./modules/auth/auth.routes";
 import { FastifyRequest, FastifyReply } from "fastify";
 import transacaoRoutes from "./modules/transacao/transacao.routes";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes";
+import { profileRoutes } from "./modules/profile/profile.routes";
 
 dotenv.config();
 
@@ -48,6 +49,7 @@ function buildApp(): FastifyInstance {
   app.register(authRoutes, { prefix: "/auth" });
   app.register(transacaoRoutes, { prefix: "/transacoes" });
   app.register(dashboardRoutes, { prefix: "/dashboard" });
+  app.register(profileRoutes, {prefix: "/profile"});
 
   return app;
 }
