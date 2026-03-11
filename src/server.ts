@@ -12,6 +12,8 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import transacaoRoutes from "./modules/transacao/transacao.routes";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes";
 import { profileRoutes } from "./modules/profile/profile.routes";
+import { metaRoutes } from "./modules/metas/meta.routes";
+import { contribuicaoRoutes } from "./modules/metas/contribuicao/contribuicao.routes";
 
 dotenv.config();
 
@@ -26,7 +28,11 @@ function buildApp(): FastifyInstance {
   app.setSerializerCompiler(serializerCompiler);
 
   app.register(sensible);
-  app.register(cors, { origin: "*" });
+  app.register(cors, {
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  });
 
   app.register(fastifyJwt, {
     secret: process.env.JWT_SECRET!,
@@ -49,7 +55,9 @@ function buildApp(): FastifyInstance {
   app.register(authRoutes, { prefix: "/auth" });
   app.register(transacaoRoutes, { prefix: "/transacoes" });
   app.register(dashboardRoutes, { prefix: "/dashboard" });
-  app.register(profileRoutes, {prefix: "/profile"});
+  app.register(profileRoutes, {prefix: "/perfil"});
+
+  app.register(metaRoutes, { prefix: "/metas" });
 
   return app;
 }

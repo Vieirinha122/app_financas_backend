@@ -20,6 +20,7 @@ model User {
   senha      String
   createdAt  DateTime    @default(now())
   transacoes Transacao[]
+  metas      Meta[]
 }
 
 enum TipoTransacao {
@@ -39,4 +40,45 @@ model Transacao {
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum MetaStatus {
+  ATIVA
+  CONCLUIDA
+  CANCELADA
+}
+
+model Meta {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  titulo    String
+  descricao String?
+  emoji     String? @default("🎯")
+  cor       String? @default("#00D084")
+
+  valorAlvo Decimal
+  prazo     DateTime?
+
+  status     MetaStatus @default(ATIVA)
+  prioridade Int        @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contribuicoes MetaContribuicao[]
+
+  @@index([userId])
+}
+
+model MetaContribuicao {
+  id     String @id @default(uuid())
+  metaId String
+  meta   Meta   @relation(fields: [metaId], references: [id], onDelete: Cascade)
+
+  valor Decimal
+  nota  String?
+
+  createdAt DateTime @default(now())
 }
